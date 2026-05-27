@@ -11,21 +11,36 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware — support comma-separated origins for multi-env deployments
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
-  .split(',')
-  .map((s) => s.trim());
+// ── CORS ─────────────────────────────────────────────────────────────────────
+// FRONTEND_URL accepts:
+//   • A single origin:          https://ai-portal-frontend.onrender.com
+//   • Comma-separated origins:  https://foo.onrender.com,http://localhost:5173
+//   • Wildcard (open access):   *   ← useful during initial Render setup / testing
+const rawFrontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+const allowAllOrigins = rawFrontendUrl.trim() === '*';
+const allowedOrigins = allowAllOrigins
+  ? []
+  : rawFrontendUrl.split(',').map((s) => s.trim());
+
+if (allowAllOrigins) {
+  console.warn('[CORS] FRONTEND_URL=* — all origins are allowed. Set a specific URL for production.');
+} else {
+  console.log(`[CORS] Allowed origins: ${allowedOrigins.join(', ')}`);
+}
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (curl, Postman, server-to-server)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`CORS: origin ${origin} not allowed`));
-      }
-    },
+    origin: allowAllOrigins
+      ? '*'
+      : (origin, callback) => {
+          // Allow requests with no origin (curl, Postman, server-to-server)
+          if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            console.warn(`[CORS] Blocked request from origin: ${origin}`);
+            callback(new Error(`CORS: origin ${origin} not allowed`));
+          }
+        },
   })
 );
 app.use(express.json());

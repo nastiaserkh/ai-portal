@@ -21,9 +21,10 @@ services:
       - key: GEMINI_MODEL
         value: gemini-2.5-flash
       - key: FRONTEND_URL
-        # Set to your Render frontend URL after first deploy, e.g.:
+        # '*' allows all origins — safe for initial setup.
+        # After the frontend is deployed, change this to its exact URL, e.g.:
         # https://ai-portal-frontend.onrender.com
-        sync: false
+        value: "*"
 
   # ── Frontend ──────────────────────────────────────────────────────────────
   - type: web

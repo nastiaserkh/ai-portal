@@ -97,14 +97,17 @@ Go to [render.com](https://render.com) and sign up (free, no credit card require
 
 ---
 
-## Step 5 — Wire the two services together
+## Step 5 — Lock down CORS for production
 
-Now that both URLs are known, link them.
+The backend starts with `FRONTEND_URL=*` (open access) so the first deploy works.
+Once the frontend is deployed and you have its URL, tighten CORS:
 
-**Update backend CORS:**
 1. Go to `ai-portal-backend` → **Environment**
-2. Set `FRONTEND_URL` = `https://ai-portal-frontend.onrender.com`
-3. Click **Save Changes** — Render redeploys automatically
+2. Change `FRONTEND_URL` from `*` to your exact frontend URL, e.g.:
+   `https://ai-portal-frontend.onrender.com`
+3. Click **Save Changes** — Render redeploys automatically (~1 min)
+
+> **If you get a CORS error during testing**, check the backend logs in the Render dashboard — the backend prints `[CORS] Blocked request from origin: <url>` which shows you exactly what URL to put in `FRONTEND_URL`.
 
 **Verify:**
 - Open `https://ai-portal-frontend.onrender.com` in your browser
