@@ -14,9 +14,8 @@ services:
       - key: NODE_VERSION
         value: "20"
       - key: DATABASE_URL
-        # SQLite stored in /tmp — ephemeral (resets on redeploy).
-        # For persistent storage switch to PostgreSQL (see DEPLOYMENT.md).
-        value: file:/tmp/ai-portal.db
+        # Neon PostgreSQL connection string — paste in the Render dashboard, never commit.
+        sync: false
       - key: GEMINI_API_KEY
         sync: false          # paste in the Render dashboard — get free key at aistudio.google.com
       - key: GEMINI_MODEL

@@ -8,12 +8,10 @@ services:
       - "3001:3001"
     environment:
       - PORT=3001
-      - DATABASE_URL=file:/app/data/dev.db
+      - DATABASE_URL=${DATABASE_URL}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
       - FRONTEND_URL=http://localhost:5173
-    volumes:
-      - backend-db:/app/data
 
   frontend:
     build:
@@ -25,6 +23,3 @@ services:
       - "5173:80"
     depends_on:
       - backend
-
-volumes:
-  backend-db:
