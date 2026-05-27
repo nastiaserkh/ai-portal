@@ -1,0 +1,6 @@
+# Files to exclude from the Render build context
+node_modules/
+dist/
+*.db
+*.db-journal
+*.log

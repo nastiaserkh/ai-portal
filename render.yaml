@@ -1,0 +1,46 @@
+## Render Blueprint — deploys backend + frontend together
+## Docs: https://render.com/docs/blueprint-spec
+
+services:
+  # ── Backend ──────────────────────────────────────────────────────────────
+  - type: web
+    name: ai-portal-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npx prisma db push && node dist/index.js
+    plan: free
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: DATABASE_URL
+        # SQLite stored in /tmp — ephemeral (resets on redeploy).
+        # For persistent storage switch to PostgreSQL (see DEPLOYMENT.md).
+        value: file:/tmp/ai-portal.db
+      - key: OPENAI_API_KEY
+        sync: false          # you will paste this in the Render dashboard
+      - key: OPENAI_MODEL
+        value: gpt-4o
+      - key: FRONTEND_URL
+        # Set to your Render frontend URL after first deploy, e.g.:
+        # https://ai-portal-frontend.onrender.com
+        sync: false
+
+  # ── Frontend ──────────────────────────────────────────────────────────────
+  - type: web
+    name: ai-portal-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    plan: free
+    envVars:
+      - key: VITE_API_BASE_URL
+        # Set to your Render backend URL after first deploy, e.g.:
+        # https://ai-portal-backend.onrender.com
+        sync: false
+    routes:
+      # SPA fallback — send all 404s to index.html so React Router works
+      - type: rewrite
+        source: /*
+        destination: /index.html
