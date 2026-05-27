@@ -34,7 +34,7 @@ export default function ConversationSidebar({ refresh }: Props) {
   }, [refresh]);
 
   const handleNew = async () => {
-    const conv = await createConversation('New Chat', 'general' as ChatMode);
+    const conv = await createConversation('New Chat', 'travel' as ChatMode);
     setConversations((prev) => [conv, ...prev]);
     navigate(`/chat/${conv.id}`);
   };
@@ -74,7 +74,7 @@ export default function ConversationSidebar({ refresh }: Props) {
                 >
                   <span className="truncate flex-1">
                     <span className="mr-1">
-                      {c.mode === 'code' ? '💻' : c.mode === 'summarizer' ? '📝' : c.mode === 'writing' ? '✍️' : '🤖'}
+                      {c.mode === 'trip_planner' ? '🗺️' : c.mode === 'destination' ? '📍' : c.mode === 'booking' ? '🏨' : '✈️'}
                     </span>
                     {c.title}
                   </span>

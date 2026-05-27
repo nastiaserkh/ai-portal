@@ -10,9 +10,13 @@ import {
   getChatCompletion,
   ChatMessage,
 } from '../services/openai.service.js';
+import { buildTravelContext } from '../services/travel.service.js';
 import { SendMessageBody, ChatMode } from '../types/index.js';
 
 const router = Router();
+
+/** Modes that benefit from real destination data injection */
+const TRAVEL_CONTEXT_MODES: ChatMode[] = ['trip_planner', 'destination'];
 
 // POST /chat/stream  — streams response via Server-Sent Events
 router.post(
@@ -25,11 +29,17 @@ router.post(
     };
 
     try {
-      const { conversationId, message, mode = 'general' } =
-        req.body as SendMessageBody;
+      const {
+        conversationId,
+        message,
+        mode = 'travel',
+        destination,
+      } = req.body as SendMessageBody;
 
       if (!conversationId || !message) {
-        res.status(400).json({ error: 'conversationId and message are required' });
+        res
+          .status(400)
+          .json({ error: 'conversationId and message are required' });
         return;
       }
 
@@ -48,6 +58,17 @@ router.post(
         role: m.role as 'user' | 'assistant' | 'system',
         content: m.content,
       }));
+
+      // Fetch real attraction data when destination is provided and mode benefits from it
+      let travelContext: string | undefined;
+      const targetDestination = destination?.trim();
+      if (targetDestination && TRAVEL_CONTEXT_MODES.includes(mode as ChatMode)) {
+        console.log(`[travel] Fetching context for: ${targetDestination}`);
+        travelContext = (await buildTravelContext(targetDestination)) || undefined;
+        if (travelContext) {
+          console.log(`[travel] Context injected (${travelContext.length} chars)`);
+        }
+      }
 
       // Set SSE headers — after this point errors must be sent as SSE events
       res.setHeader('Content-Type', 'text/event-stream');
@@ -75,12 +96,11 @@ router.post(
 
           sendEvent('done', { text: fullText });
           res.end();
-        }
+        },
+        travelContext
       );
     } catch (err) {
       if (headersAlreadySent) {
-        // Headers already sent — can't return a normal error response.
-        // Send an error event over SSE so the client knows something went wrong.
         const message = err instanceof Error ? err.message : 'Stream error';
         console.error('[Stream error]', message);
         try {
@@ -101,11 +121,17 @@ router.post(
 // POST /chat  — non-streaming fallback
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { conversationId, message, mode = 'general' } =
-      req.body as SendMessageBody;
+    const {
+      conversationId,
+      message,
+      mode = 'travel',
+      destination,
+    } = req.body as SendMessageBody;
 
     if (!conversationId || !message) {
-      res.status(400).json({ error: 'conversationId and message are required' });
+      res
+        .status(400)
+        .json({ error: 'conversationId and message are required' });
       return;
     }
 
@@ -123,7 +149,17 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
       content: m.content,
     }));
 
-    const reply = await getChatCompletion(chatMessages, mode as ChatMode);
+    let travelContext: string | undefined;
+    const targetDestination = destination?.trim();
+    if (targetDestination && TRAVEL_CONTEXT_MODES.includes(mode as ChatMode)) {
+      travelContext = (await buildTravelContext(targetDestination)) || undefined;
+    }
+
+    const reply = await getChatCompletion(
+      chatMessages,
+      mode as ChatMode,
+      travelContext
+    );
 
     await addMessage(conversationId, 'assistant', reply);
 

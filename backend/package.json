@@ -1,7 +1,7 @@
 {
   "name": "ai-portal-backend",
   "version": "1.0.0",
-  "description": "AI Portal backend — Node.js + Express + OpenAI",
+  "description": "AI Portal backend — Node.js + Express + Gemini",
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",

@@ -5,6 +5,7 @@ import cors from 'cors';
 import healthRouter from './routes/health.js';
 import conversationsRouter from './routes/conversations.js';
 import chatRouter from './routes/chat.js';
+import travelRouter from './routes/travel.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 const app = express();
@@ -33,12 +34,13 @@ app.use(express.json());
 app.use('/health', healthRouter);
 app.use('/conversations', conversationsRouter);
 app.use('/chat', chatRouter);
+app.use('/travel', travelRouter);
 
 // 404 + error handlers
 app.use(notFound);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`AI Portal backend running on http://localhost:${PORT}`);
+  console.log(`Travel AI Portal backend running on http://localhost:${PORT} (Gemini ${process.env.GEMINI_MODEL || 'gemini-1.5-flash'})`);
   console.log(`Health: http://localhost:${PORT}/health`);
 });

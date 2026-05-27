@@ -35,7 +35,7 @@ export default function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, streamingText]);
 
-  const handleSend = async (text: string, mode: ChatMode) => {
+  const handleSend = async (text: string, mode: ChatMode, destination?: string) => {
     let convId = id;
 
     // If no conversation open, create one first
@@ -80,7 +80,8 @@ export default function Chat() {
         console.error('Stream error:', err);
         setIsStreaming(false);
         setStreamingText('');
-      }
+      },
+      destination
     );
   };
 
@@ -90,7 +91,7 @@ export default function Chat() {
     };
   }, []);
 
-  const activeMode = (conversation?.mode as ChatMode) || 'general';
+  const activeMode = (conversation?.mode as ChatMode) || 'travel';
 
   return (
     <div className="flex h-full">
@@ -109,9 +110,9 @@ export default function Chat() {
         <div className="flex-1 overflow-y-auto px-6 py-4">
           {messages.length === 0 && !isStreaming && (
             <div className="h-full flex flex-col items-center justify-center text-center text-gray-400">
-              <div className="text-5xl mb-3">💬</div>
-              <p className="font-medium text-gray-600">Start a conversation</p>
-              <p className="text-sm mt-1">Type a message below to begin.</p>
+              <div className="text-5xl mb-3">✈️</div>
+              <p className="font-medium text-gray-600">Where to next?</p>
+              <p className="text-sm mt-1">Ask about destinations, plan a trip, or get booking advice.</p>
             </div>
           )}
 
@@ -123,7 +124,7 @@ export default function Chat() {
           {isStreaming && (
             <div className="flex justify-start mb-4">
               <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm mr-2 flex-shrink-0 mt-1">
-                🤖
+                ✈️
               </div>
               <div className="max-w-[75%] rounded-2xl rounded-bl-sm px-4 py-3 text-sm bg-white border border-gray-200 shadow-sm text-gray-800">
                 {streamingText ? (

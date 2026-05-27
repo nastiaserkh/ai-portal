@@ -1,4 +1,4 @@
-export type ChatMode = 'general' | 'code' | 'summarizer' | 'writing';
+export type ChatMode = 'travel' | 'trip_planner' | 'destination' | 'booking';
 
 export interface Message {
   id: string;
@@ -24,35 +24,41 @@ export interface Tool {
   description: string;
   icon: string;
   color: string;
+  /** Whether this mode shows a destination input field */
+  hasDestination: boolean;
 }
 
 export const TOOLS: Tool[] = [
   {
-    id: 'general',
-    label: 'General Assistant',
-    description: 'Ask anything — get helpful, clear answers.',
-    icon: '🤖',
-    color: 'from-blue-500 to-blue-600',
+    id: 'travel',
+    label: 'Travel Advisor',
+    description: 'Ask anything about travel — destinations, tips, culture, safety, and more.',
+    icon: '✈️',
+    color: 'from-sky-500 to-blue-600',
+    hasDestination: false,
   },
   {
-    id: 'code',
-    label: 'Code Helper',
-    description: 'Debug, explain, or write code with an expert AI.',
-    icon: '💻',
-    color: 'from-purple-500 to-purple-600',
+    id: 'trip_planner',
+    label: 'Trip Planner',
+    description: 'Get a detailed day-by-day itinerary powered by real attraction data.',
+    icon: '🗺️',
+    color: 'from-emerald-500 to-teal-600',
+    hasDestination: true,
   },
   {
-    id: 'summarizer',
-    label: 'Summarizer',
-    description: 'Paste any text and get a crisp summary.',
-    icon: '📝',
-    color: 'from-green-500 to-green-600',
+    id: 'destination',
+    label: 'Destination Guide',
+    description: 'Explore any city or country — history, culture, food, and hidden gems.',
+    icon: '📍',
+    color: 'from-orange-500 to-rose-500',
+    hasDestination: true,
   },
   {
-    id: 'writing',
-    label: 'Writing Assistant',
-    description: 'Improve your writing — grammar, tone, clarity.',
-    icon: '✍️',
-    color: 'from-orange-500 to-orange-600',
+    id: 'booking',
+    label: 'Booking Advisor',
+    description: 'Find the best flights, hotels, and deals for your next adventure.',
+    icon: '🏨',
+    color: 'from-violet-500 to-purple-600',
+    hasDestination: false,
   },
 ];

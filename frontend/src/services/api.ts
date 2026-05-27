@@ -33,6 +33,44 @@ export async function deleteConversation(id: string): Promise<void> {
   await fetch(`${BASE}/conversations/${id}`, { method: 'DELETE' });
 }
 
+// ─── Travel API ───────────────────────────────────────────────────────────────
+
+export interface CountryInfo {
+  name: string;
+  capital: string;
+  currency: string;
+  languages: string;
+  region: string;
+  population: number;
+}
+
+export interface CityScores {
+  fullName: string;
+  teleportScore: number;
+  categories: Array<{ name: string; score: number }>;
+  summary: string;
+}
+
+export interface DestinationInfo {
+  query: string;
+  country?: CountryInfo;
+  city?: CityScores;
+}
+
+export async function getDestinationInfo(
+  query: string
+): Promise<DestinationInfo | null> {
+  try {
+    const res = await fetch(
+      `${BASE}/travel/destination?q=${encodeURIComponent(query)}`
+    );
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
 // ─── Streaming Chat ───────────────────────────────────────────────────────────
 
 export function streamMessage(
@@ -41,7 +79,8 @@ export function streamMessage(
   mode: ChatMode,
   onChunk: (text: string) => void,
   onDone: (fullText: string) => void,
-  onError: (err: Error) => void
+  onError: (err: Error) => void,
+  destination?: string
 ): () => void {
   let cancelled = false;
 
@@ -50,7 +89,7 @@ export function streamMessage(
       const res = await fetch(`${BASE}/chat/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationId, message, mode }),
+        body: JSON.stringify({ conversationId, message, mode, destination }),
       });
 
       if (!res.ok || !res.body) {
@@ -100,7 +139,8 @@ export function streamMessage(
 
       if (!cancelled) onDone(fullText);
     } catch (err) {
-      if (!cancelled) onError(err instanceof Error ? err : new Error(String(err)));
+      if (!cancelled)
+        onError(err instanceof Error ? err : new Error(String(err)));
     }
   })();
 

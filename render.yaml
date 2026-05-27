@@ -17,10 +17,10 @@ services:
         # SQLite stored in /tmp — ephemeral (resets on redeploy).
         # For persistent storage switch to PostgreSQL (see DEPLOYMENT.md).
         value: file:/tmp/ai-portal.db
-      - key: OPENAI_API_KEY
-        sync: false          # you will paste this in the Render dashboard
-      - key: OPENAI_MODEL
-        value: gpt-4o
+      - key: GEMINI_API_KEY
+        sync: false          # paste in the Render dashboard — get free key at aistudio.google.com
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
       - key: FRONTEND_URL
         # Set to your Render frontend URL after first deploy, e.g.:
         # https://ai-portal-frontend.onrender.com

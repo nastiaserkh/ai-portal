@@ -36,7 +36,7 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 // POST /conversations
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { title = 'New Chat', mode = 'general' } =
+    const { title = 'New Chat', mode = 'travel' } =
       req.body as CreateConversationBody;
     const conversation = await createConversation(title, mode);
     res.status(201).json(conversation);
