@@ -1,6 +1,4 @@
-# Deployment Guide — Travel AI Portal on Render (free)
-
-This guide deploys the Travel AI Portal to [Render](https://render.com) at no cost.
+# Deployment Guide — Travel AI Portal
 
 **Stack summary:**
 - Backend → Render Web Service (Docker, free tier — sleeps after 15 min of inactivity)
@@ -9,36 +7,13 @@ This guide deploys the Travel AI Portal to [Render](https://render.com) at no co
 - Travel data → REST Countries + Teleport (both free, no API key needed)
 - Database → SQLite in `/tmp` (ephemeral — resets on redeploy; see [Persistent DB](#optional-persistent-database-neon-postgresql) to avoid this)
 
----
+## Step 1 — Create a Render account
 
-## Step 1 — Push the project to GitHub
-
-Render deploys from a Git repository.
-
-> **Note:** The `.gitignore` already excludes `.env`, `node_modules/`, `dist/`, and database files — your API key will not be uploaded.
-
-1. Go to [github.com](https://github.com) → **New repository**
-2. Name it (e.g. `ai-portal`), set it to **Private**, click **Create repository**
-3. In a terminal, inside `C:\лолітех\Настіне\хмарні технології\ai-portal`, run:
-
-```bash
-git init
-git add .
-git commit -m "initial commit"
-git remote add origin https://github.com/YOUR_USERNAME/ai-portal.git
-git branch -M main
-git push -u origin main
-```
+Go to [render.com](https://render.com) and sign up. Connect your GitHub account when prompted.
 
 ---
 
-## Step 2 — Create a Render account
-
-Go to [render.com](https://render.com) and sign up (free, no credit card required). Connect your GitHub account when prompted.
-
----
-
-## Step 3 — Deploy the backend (Web Service)
+## Step 2 — Deploy the backend (Web Service)
 
 1. In the Render dashboard click **New → Web Service**
 2. Select your `ai-portal` repository
@@ -69,7 +44,7 @@ Go to [render.com](https://render.com) and sign up (free, no credit card require
 
 ---
 
-## Step 4 — Deploy the frontend (Static Site)
+## Step 3 — Deploy the frontend (Static Site)
 
 1. In the Render dashboard click **New → Static Site**
 2. Select the same `ai-portal` repository
@@ -97,7 +72,7 @@ Go to [render.com](https://render.com) and sign up (free, no credit card require
 
 ---
 
-## Step 5 — Wire the two services together
+## Step 4 — Wire the two services together
 
 Now that both URLs are known, link them.
 
