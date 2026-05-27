@@ -1,33 +1,10 @@
-# Deployment Guide
-
-## Step 1 — Push the project to GitHub
-
-Render deploys from a Git repository. You need to push the project to GitHub first.
-
-> **Note:** The `.gitignore` already excludes `.env`, `node_modules/`, `dist/`, and database files — your API key will not be uploaded.
-
-1. Go to [github.com](https://github.com) → **New repository**
-2. Name it (e.g. `ai-portal`), set it to **Private**, click **Create repository**
-3. In a terminal, inside the project folder (`C:\лолітех\Настіне\хмарні технології`), run:
-
-```bash
-git init
-git add .
-git commit -m "initial commit"
-git remote add origin https://github.com/YOUR_USERNAME/ai-portal.git
-git branch -M main
-git push -u origin main
-```
-
----
-
-## Step 2 — Create a Render account
+## Step 1 — Create a Render account
 
 Go to [render.com](https://render.com) and sign up (free, no credit card required). Connect your GitHub account when prompted.
 
 ---
 
-## Step 3 — Deploy the backend (Web Service)
+## Step 2 — Deploy the backend (Web Service)
 
 1. In the Render dashboard click **New → Web Service**
 2. Select your `ai-portal` repository
@@ -56,7 +33,7 @@ Go to [render.com](https://render.com) and sign up (free, no credit card require
 
 ---
 
-## Step 4 — Deploy the frontend (Static Site)
+## Step 3 — Deploy the frontend (Static Site)
 
 1. In the Render dashboard click **New → Static Site**
 2. Select the same `ai-portal` repository
@@ -86,7 +63,7 @@ Go to [render.com](https://render.com) and sign up (free, no credit card require
 
 ---
 
-## Step 5 — Wire the two services together
+## Step 4 — Wire the two services together
 
 Now that both URLs are known, update each service with the other's URL.
 
